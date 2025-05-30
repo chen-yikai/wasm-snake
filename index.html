@@ -103,12 +103,22 @@
   <body
     class="min-h-screen bg-gray-100 flex flex-col items-center justify-center font-sans"
   >
+    <div class="absolute bottom-[10px] right-[10px]">
+      <a
+        class="text-xs font-bold transition-all duration-300 hover:bg-purple-100 px-2 py-1 rounded-md border-[1px]"
+        href="https://github.com/chen-yikai/wasm-snake"
+        target="_blank"
+        >GitHub Repo</a
+      >
+    </div>
     <div
       class="flex justify-between items-center w-[635px] sticky top-0 z-10 py-1"
     >
-      <h1 class="text-xl font-bold text-purple-500 font-sans mb-0">
-        WASM Snake Game
-      </h1>
+      <div class="block group" id="title-box">
+        <h1 class="text-xl font-bold text-purple-500 font-sans mb-0" id="title">
+          WASM Snake Game
+        </h1>
+      </div>
       <div id="score" class="text-xl font-light text-gray-400 mb-0">
         Score: 0
       </div>
