@@ -19,7 +19,10 @@ A simple snake game built with C and Javascript via WebAssembly (WASM).
 4. Finally, run a server what ever you like (Ex: python or live-server)
 
 # 📸 Demo
-![Demo](./demo/snake%20init.jpeg)
-![Demo](./demo/snake%20move.jpeg)
-![Demo](./demo/snake%20through%20walls.jpeg)
-![Demo](./demo/snake%20hit%20it%20self.jpeg)
+
+| Info       | Screenshot |
+|-------------------|-------|
+| Initial State     | ![Initial State](./demo/init.jpeg) |
+| Moving            | ![Moving](./demo/move.jpeg) |
+| Pass Through Wall      | ![Through Wall](./demo/through_wall.jpeg) |
+| Hit it self Game Over         | ![Game Over](./demo/gameover.jpeg) |
