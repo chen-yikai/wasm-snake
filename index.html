@@ -5,12 +5,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Varela+Round&display=swap"
-      rel="stylesheet"
-    />
     <style type="text/tailwindcss">
       .game-cell {
         @apply w-[30px] h-[30px] bg-gray-100;
@@ -29,8 +23,19 @@
       }
     </style>
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=M+PLUS+2:wght@100..900&display=swap");
+
+      * {
+        font-family: "M PLUS 2", sans-serif;
+      }
+
       body {
         animation: fadeIn 0.6s ease-in-out;
+      }
+
+      *::selection {
+        background-color: #e9d5ff;
+        color: #4c1d95;
       }
 
       @keyframes fadeIn {
@@ -89,9 +94,6 @@
         extend: {
           gridTemplateColumns: {
             20: "repeat(20, minmax(0, 1fr))",
-          },
-          fontFamily: {
-            cursive: ["Cherry Bomb One", "fun"],
           },
         },
       },
