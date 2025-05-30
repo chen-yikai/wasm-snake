@@ -57,6 +57,30 @@
           opacity: 1;
         }
       }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
+          transform: translateX(-10px);
+        }
+        20%,
+        40%,
+        60%,
+        80% {
+          transform: translateX(10px);
+        }
+      }
+
+      .shake {
+        animation: shake 0.5s ease-in-out;
+      }
     </style>
   </head>
   <script>
@@ -91,6 +115,7 @@
       id="game-board"
       class="grid grid-cols-20 gap-0.5 bg-gray-600 p-[4px] rounded-md shadow-xl"
     ></div>
+
     <div class="h-10 mt-7">
       <div class="text-gray-400 text-center transition" id="hint">
         Use
@@ -190,6 +215,7 @@
           if (over) {
             gameOver.classList.remove("hidden");
             hint.classList.add("hidden");
+            document.getElementById("game-board").classList.add("shake");
             document.removeEventListener("keydown", handleKey);
           }
         }

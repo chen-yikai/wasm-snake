@@ -77,8 +77,20 @@ void update_game() {
   if (snake[0].x == food.x && snake[0].y == food.y) {
     snake_length++;
     score += 10;
-    food.x = rand() % WIDTH;
-    food.y = rand() % HEIGHT;
+    do {
+      food.x = rand() % WIDTH;
+      food.y = rand() % HEIGHT;
+      int on_snake = 0;
+      for (int i = 0; i < snake_length; i++) {
+        if (snake[i].x == food.x && snake[i].y == food.y) {
+          on_snake = 1;
+          break;
+        }
+      }
+      if (!on_snake) {
+        break;
+      }
+    } while (1);
     snake[snake_length - 1] = tail;
   }
 }
