@@ -11,5 +11,3 @@ emcc snake.c -o snake.js \
     -g
 
 echo "Done!"
-
-python3 -m http.server 8000
