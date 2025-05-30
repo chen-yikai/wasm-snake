@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+  <head>
+    <title>WASM Snake Game</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Varela+Round&display=swap"
+      rel="stylesheet"
+    />
+    <style type="text/tailwindcss">
+      .game-cell {
+        @apply w-[30px] h-[30px] bg-gray-100;
+      }
+      .snake-cell {
+        @apply bg-green-300;
+      }
+      .snake-head {
+        @apply bg-blue-400;
+      }
+      .food-cell {
+        @apply bg-purple-500 transition duration-[1s];
+      }
+      code {
+        @apply font-bold text-sm;
+      }
+    </style>
+    <style>
+      body {
+        animation: fadeIn 0.6s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          filter: blur(10px);
+        }
+        to {
+          filter: blur(0);
+        }
+      }
+
+      #game-over {
+        animation: blink 1s infinite alternate;
+      }
+
+      @keyframes blink {
+        0% {
+          opacity: 0;
+        }
+        70% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          gridTemplateColumns: {
+            20: "repeat(20, minmax(0, 1fr))",
+          },
+          fontFamily: {
+            cursive: ["Cherry Bomb One", "fun"],
+          },
+        },
+      },
+    };
+  </script>
+  <body
+    class="min-h-screen bg-gray-100 flex flex-col items-center justify-center font-sans"
+  >
+    <div
+      class="flex justify-between items-center w-[635px] sticky top-0 z-10 py-1"
+    >
+      <h1 class="text-xl font-bold text-purple-500 font-sans mb-0">
+        WASM Snake Game
+      </h1>
+      <div id="score" class="text-xl font-light text-gray-400 mb-0">
+        Score: 0
+      </div>
+    </div>
+
+    <div
+      id="game-board"
+      class="grid grid-cols-20 gap-0.5 bg-gray-600 p-[4px] rounded-md shadow-xl"
+    ></div>
+    <div class="h-10 mt-7">
+      <div class="text-gray-400 text-center transition" id="hint">
+        Use
+        <code class="text-purple-500 bg-white p-1 rounded-md"
+          >&larr; &uarr; &darr; &rarr;</code
+        >
+        to move,
+        <code class="text-purple-500 bg-white p-1 rounded-md">ESC</code> or
+        <code class="text-purple-500 bg-white p-1 rounded-md">Q</code> to quit
+      </div>
+      <div
+        class="text-red-500 text-xl font-bold text-center transition"
+        id="game-over"
+      >
+        Game over,
+        <code class="text-purple-500 bg-white p-1 rounded-md"
+          >Refresh the page</code
+        >
+        or
+        <code class="text-purple-500 bg-white p-1 rounded-md">Hit Enter</code>
+        to play again
+      </div>
+    </div>
+
+    <script>
+      var WIDTH = 20;
+      var HEIGHT = 20;
+
+      let gameOver = document.getElementById("game-over");
+      let hint = document.getElementById("hint");
+
+      var Module = {
+        onRuntimeInitialized: function () {
+          console.log("WASM loaded!!!");
+
+          document.addEventListener("keydown", function (event) {
+            if (
+              event.key.startsWith("Arrow") ||
+              event.key === "Escape" ||
+              event.key === "q" ||
+              event.key === "Q"
+            ) {
+              event.preventDefault();
+              Module.ccall("handle_key", "void", ["number"], [event.keyCode]);
+            }
+          });
+          // Start rendering
+          startRendering();
+        },
+      };
+
+      function startRendering() {
+        let board = document.getElementById("game-board");
+
+        // Create grid cells
+        board.innerHTML = "";
+        for (let i = 0; i < WIDTH * HEIGHT; i++) {
+          let cell = document.createElement("div");
+          cell.className = "game-cell";
+          board.appendChild(cell);
+        }
+
+        let cells = board.children;
+        let over = false;
+
+        function render() {
+          // Clear all cells
+          for (let i = 0; i < WIDTH * HEIGHT; i++) {
+            cells[i].className = "game-cell";
+          }
+
+          // Draw snake
+          var snakeLength = Module.ccall("get_snake_length", "number", [], []);
+          for (var i = 0; i < snakeLength; i++) {
+            let x = Module.ccall("get_snake_x", "number", ["number"], [i]);
+            let y = Module.ccall("get_snake_y", "number", ["number"], [i]);
+            let idx = y * WIDTH + x;
+            if (i === 0) {
+              cells[idx].className = "game-cell snake-head";
+            } else {
+              cells[idx].className = "game-cell snake-cell";
+            }
+          }
+
+          // Draw food
+          let foodX = Module.ccall("get_food_x", "number", [], []);
+          let foodY = Module.ccall("get_food_y", "number", [], []);
+          let foodIdx = foodY * WIDTH + foodX;
+          cells[foodIdx].className = "game-cell food-cell";
+
+          let score = Module.ccall("get_score", "number", [], []);
+          document.getElementById("score").textContent = "Score: " + score;
+
+          // Game over
+          over = Module.ccall("is_game_over", "number", [], []);
+
+          if (over) {
+            gameOver.classList.remove("hidden");
+            hint.classList.add("hidden");
+            document.removeEventListener("keydown", handleKey);
+          }
+        }
+
+        document.addEventListener("keydown", function (event) {
+          if (
+            event.key === "Escape" ||
+            event.key === "q" ||
+            event.key === "Q"
+          ) {
+            Module.ccall("quit_game", "void", [], []);
+            document.getElementById("game-over").classList.remove("hidden");
+          }
+          if (event.key === "Enter" && over) {
+            window.location.reload();
+          }
+        });
+
+        gameOver.classList.add("hidden");
+
+        setInterval(render, 150);
+      }
+    </script>
+    <script src="snake.js"></script>
+  </body>
+</html>
