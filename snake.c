@@ -1,9 +1,3 @@
-// 引入必要的標頭檔
-// emscripten.h 用於 WebAssembly 編譯
-// stdio.h 用於標準輸入輸出
-// stdlib.h 用於隨機數生成
-// string.h 用於字串操作
-// time.h 用於時間相關功能
 #include <emscripten.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,25 +8,22 @@
 #define EMSCRIPTEN_KEEPALIVE
 #endif
 
-// 定義遊戲區域大小
-// WIDTH 和 HEIGHT 定義遊戲區域的寬度和高度
-// MAX_SNAKE_LENGTH 定義蛇的最大可能長度
+// 定義遊戲區域大小 20x20
 #define WIDTH 20
 #define HEIGHT 20
 #define MAX_SNAKE_LENGTH (WIDTH * HEIGHT)
 
-// 定義點的結構，用於表示蛇身和食物位置
-// x 和 y 分別表示在遊戲區域中的橫縱座標
+// 表示蛇身和食物位置 x 和 y 分別表示在遊戲區域中的橫縱座標
 typedef struct {
   int x, y;
 } Point;
 
 /*
- * 方向定義：
- * 0 向上 - 蛇頭向上移動
- * 1 向右 - 蛇頭向右移動
- * 2 向下 - 蛇頭向下移動
- * 3 向左 - 蛇頭向左移動
+ * 方向
+ * 0 向上
+ * 1 向右
+ * 2 向下
+ * 3 向左
  */
 Point snake[MAX_SNAKE_LENGTH]; // 蛇的身體，使用陣列儲存每個節點的位置
 Point food;                    // 食物位置
@@ -42,7 +33,6 @@ int game_over = 0;             // 遊戲結束標誌，0表示遊戲進行中，
 int score = 0;                 // 分數，吃到食物時增加
 
 // 初始化遊戲
-// 設定蛇的初始位置和第一個食物
 void init_game() {
   // 將蛇的初始位置設在畫面中央
   snake[0].x = WIDTH / 2;
@@ -99,7 +89,7 @@ void update_game() {
   if (snake[0].x == food.x && snake[0].y == food.y) {
     snake_length++; // 增加蛇的長度
     score += 10;    // 增加分數
-    // 生成新的食物位置，確保不會出現在蛇身上
+    // 生成新的食物位置時確保不會出現在蛇身上
     do {
       food.x = rand() % WIDTH;
       food.y = rand() % HEIGHT;
@@ -120,8 +110,7 @@ void update_game() {
   }
 }
 
-// 遊戲主循環
-// 持續更新遊戲狀態，直到遊戲結束
+// 遊戲主循環 持續更新遊戲狀態，直到遊戲結束
 void game_loop() {
   if (!game_over) {
     update_game();
@@ -131,7 +120,6 @@ void game_loop() {
 }
 
 // 處理鍵盤輸入
-// 根據按鍵改變蛇的移動方向
 EMSCRIPTEN_KEEPALIVE void handle_key(int key) {
   switch (key) {
   case 38:              // 上箭頭
@@ -159,8 +147,7 @@ EMSCRIPTEN_KEEPALIVE void handle_key(int key) {
   }
 }
 
-// 以下函數用於與 JavaScript 互動
-// 這些函數被標記為 EMSCRIPTEN_KEEPALIVE 以確保在編譯時保留
+// JavaScript 調用的函數
 EMSCRIPTEN_KEEPALIVE int get_snake_length() { return snake_length; }
 EMSCRIPTEN_KEEPALIVE int get_snake_x(int i) { return snake[i].x; }
 EMSCRIPTEN_KEEPALIVE int get_snake_y(int i) { return snake[i].y; }
@@ -173,6 +160,6 @@ EMSCRIPTEN_KEEPALIVE int is_game_over() { return game_over; }
 int main() {
   srand(time(NULL));                         // 初始化隨機數生成器
   init_game();                               // 初始化遊戲
-  emscripten_set_main_loop(game_loop, 7, 1); // 設置遊戲主循環，7 FPS
+  emscripten_set_main_loop(game_loop, 7, 1); // 設置遊戲主循環，7 FPS也就是150ms
   return 0;
 }
