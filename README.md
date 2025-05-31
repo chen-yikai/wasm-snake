@@ -31,9 +31,4 @@ A simple snake game built with C and Javascript via WebAssembly (WASM).
 | Pass Through Wall     | ![Through Wall](./demo/through_wall.jpeg) |
 | Hit it self Game Over | ![Game Over](./demo/gameover.jpeg)        |
 
-# 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
-
 🛠️ Built by EliasChen as a project for school report
-
