@@ -13,7 +13,7 @@
 #define HEIGHT 20
 #define MAX_SNAKE_LENGTH (WIDTH * HEIGHT)
 
-// 表示蛇身和食物位置 x 和 y 分別表示在遊戲區域中的橫縱座標
+// 表示蛇身和食物位置
 typedef struct {
   int x, y;
 } Point;
@@ -25,12 +25,12 @@ typedef struct {
  * 2 向下
  * 3 向左
  */
-Point snake[MAX_SNAKE_LENGTH]; // 蛇的身體，使用陣列儲存每個節點的位置
+Point snake[MAX_SNAKE_LENGTH]; // 蛇的身體
 Point food;                    // 食物位置
-int snake_length = 1;          // 蛇的當前長度，初始值為1
-int direction = 1;             // 移動方向，初始值為向右
-int game_over = 0;             // 遊戲結束標誌，0表示遊戲進行中，1表示遊戲結束
-int score = 0;                 // 分數，吃到食物時增加
+int snake_length = 1;          // 蛇的當前長度
+int direction = 1;             // 移動方向
+int game_over = 0;             // 遊戲結束標誌
+int score = 0;                 // 分數
 
 // 初始化遊戲
 void init_game() {
@@ -46,7 +46,7 @@ void update_game() {
   // 保存蛇尾位置，用於吃到食物時增長
   Point tail = snake[snake_length - 1];
 
-  // 移動蛇身：從尾部開始，每個節點移動到前一個節點的位置
+  // 移動蛇身 每個點移動到前一個節點的位置
   for (int i = snake_length - 1; i > 0; i--) {
     snake[i] = snake[i - 1];
   }
@@ -67,7 +67,7 @@ void update_game() {
     break;
   }
 
-  // 處理穿牆：當蛇碰到邊界時，從另一側出現
+  // 穿牆
   if (snake[0].x < 0)
     snake[0].x = WIDTH - 1;
   if (snake[0].x >= WIDTH)
