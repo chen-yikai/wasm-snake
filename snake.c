@@ -1,3 +1,5 @@
+// 完整原始碼：https://github.com/chen-yikai/wasm-snake
+// 遊戲Demo：https://wasm-snake-game.vercel.app
 #include <emscripten.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -119,6 +121,7 @@ void game_loop() {
   }
 }
 
+// JavaScript 調用的函數
 // 處理鍵盤輸入
 EMSCRIPTEN_KEEPALIVE void handle_key(int key) {
   switch (key) {
@@ -147,7 +150,6 @@ EMSCRIPTEN_KEEPALIVE void handle_key(int key) {
   }
 }
 
-// JavaScript 調用的函數
 EMSCRIPTEN_KEEPALIVE int get_snake_length() { return snake_length; }
 EMSCRIPTEN_KEEPALIVE int get_snake_x(int i) { return snake[i].x; }
 EMSCRIPTEN_KEEPALIVE int get_snake_y(int i) { return snake[i].y; }
